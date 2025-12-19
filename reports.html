@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hospital Reports & Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f5f5f5;
+        }
+        h2 {
+            text-align: center;
+        }
+        .chart-container {
+            width: 80%;
+            margin: 40px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+        a.back {
+            display: inline-block;
+            margin: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        a.back:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h2>📊 Hospital Reporting & Analytics Dashboard</h2>
+    <a href="{{ url_for('owner_dashboard') }}" class="back">← Back to Dashboard</a>
+
+    <div class="chart-container">
+        <h3>Monthly Patient Admissions</h3>
+        <canvas id="admissionsChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h3>Doctor Performance (Prescriptions Count)</h3>
+        <canvas id="doctorChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h3>Monthly Revenue</h3>
+        <canvas id="revenueChart"></canvas>
+    </div>
+
+    <script>
+        // --- Monthly Patient Admissions ---
+        const admissionsCtx = document.getElementById('admissionsChart').getContext('2d');
+        new Chart(admissionsCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ months | tojson }},
+                datasets: [{
+                    label: 'Total Admissions',
+                    data: {{ total_admissions | tojson }},
+                    backgroundColor: '#36A2EB'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // --- Doctor Performance Chart ---
+        const doctorCtx = document.getElementById('doctorChart').getContext('2d');
+        new Chart(doctorCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ doctor_names | tojson }},
+                datasets: [{
+                    label: 'Prescriptions',
+                    data: {{ doctor_prescriptions | tojson }},
+                    backgroundColor: '#FF6384'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // --- Monthly Revenue Chart ---
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: {{ rev_months | tojson }},
+                datasets: [{
+                    label: 'Revenue (₹)',
+                    data: {{ rev_amounts | tojson }},
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: { enabled: true },
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Owner Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px 0;
+        }
+
+        header {
+            background-color: #1e3a8a;
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        /* ====== CARDS ====== */
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 220px;
+            background-color: #2563eb;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card h2 {
+            margin: 0 0 10px 0;
+            font-size: 36px;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* ====== TABLE ====== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e40af;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f1f5f9;
+        }
+
+        /* ====== BUTTON ====== */
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add {
+            background-color: #10b981;
+            color: #fff;
+        }
+
+        .btn-add:hover {
+            background-color: #059669;
+        }
+
+        .btn-view {
+            background-color: #2563eb;
+            color: #fff;
+        }
+
+        .btn-view:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Welcome, {{ owner_name }}</h1>
+    </header>
+
+    <!-- CARDS -->
+    <div class="cards">
+        <div class="card">
+            <h2>{{ total_patients }}</h2>
+            <p>Total Patients</p>
+        </div>
+        <div class="card">
+            <h2>{{ total_doctors }}</h2>
+            <p>Total Doctors</p>
+        </div>
+        <div class="card">
+            <h2>{{ monthly_revenue }}</h2>
+            <p>Monthly Revenue</p>
+        </div>
+    </div>
+
+    <a href="{{ url_for('reports') }}" class="btn btn-info">📈 View Reports</a>
+
+    <!-- ADD NEW DOCTOR -->
+    <h3>Add New Doctor</h3>
+    <form method="post" action="{{ url_for('add_doctor') }}">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit" class="btn btn-add">Add Doctor</button>
+    </form>
+
+    <!-- PATIENTS TABLE -->
+    <h3>Patient List</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Admitted Date</th>
+                <th>Discharge Date</th>
+                <th>Diagnosis</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in patients %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.admitted_date }}</td>
+                <td>{{ p.discharge_date or 'N/A' }}</td>
+                <td>{{ p.diagnosis }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- DOCTORS TABLE -->
+    <h3>Doctors List</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Total Patients</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in doctors %}
+            <tr>
+                <td>{{ d.id }}</td>
+                <td>{{ d.username }}</td>
+                <td>{{ d.total_patients }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

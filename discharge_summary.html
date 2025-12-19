@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Discharge Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Discharge Summary for {{ patient.name }}</h2>
+    <p><b>Patient ID:</b> {{ patient.id }}</p>
+    <p><b>Diagnosis:</b> {{ patient.diagnosis }}</p>
+    <p><b>Admitted Date:</b> {{ patient.admitted_date }}</p>
+    <p><b>Discharge Date:</b> {{ patient.discharge_date }}</p>
+
+    <hr>
+    <h3>Payment History</h3>
+    {% if payments %}
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Notes</th>
+            </tr>
+            {% for pay in payments %}
+            <tr>
+                <td>{{ pay.payment_date }}</td>
+                <td>₹{{ pay.amount }}</td>
+                <td>{{ pay.payment_method }}</td>
+                <td>{{ pay.notes or '' }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4"><b>Total Bill: ₹{{ total }}</b></td>
+            </tr>
+        </table>
+    {% else %}
+        <p>No payment history found.</p>
+    {% endif %}
+
+    <a href="{{ url_for('doctor_dashboard') }}">← Back to Dashboard</a>
+</body>
+</html>
